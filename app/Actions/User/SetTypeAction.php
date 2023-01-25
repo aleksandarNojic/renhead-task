@@ -1,21 +1,23 @@
 <?php
 
-namespace App\Actions\Payments;
+namespace App\Actions\User;
 
 use App\Actions\AbstractAction;
-use App\Models\Payment;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 
-class UpdatePaymentAction extends AbstractAction
+class SetTypeAction extends AbstractAction
 {
     /**
      * Constructor.
      *
      * @param Request|null $request
      */
-    public function __construct(Request $request, public Payment $payment)
-    {
+    public function __construct(
+        Request $request,
+        public User $user,
+    ) {
         parent::__construct($request);
     }
 
@@ -24,12 +26,12 @@ class UpdatePaymentAction extends AbstractAction
      *
      * @return void
      *
-     * @throws AppException
+     * @throws Exception
      */
     public function prepare()
     {
-        if ($this->payment->approval) {
-            throw new Exception('Can not update when the payment is approved/disapproved', 403);
+        if (!auth()->user()->type === User::ADMIN) {
+            throw new Exception('You do not have privilege for this action', 403);
         }
     }
 
@@ -41,8 +43,8 @@ class UpdatePaymentAction extends AbstractAction
      */
     public function handle(): bool
     {
-        return (bool) $this->payment->update(
-            $this->request->only('total_amount')
-        );
+        return (bool) $this->user->update([
+            'type' => $this->request->type
+        ]);
     }
 }

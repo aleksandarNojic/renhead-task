@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('first_name');
             $table->string('last_name');
-            $table->enum('type', ['APPROVER'])->nullable();
+            $table->enum('type', ['APPROVER', 'ADMIN'])->nullable();
             $table->string('password');
             $table->timestamps();
             $table->softDeletes();

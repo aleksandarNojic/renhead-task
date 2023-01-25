@@ -3,7 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TravelPaymentController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +22,20 @@ Route::middleware('auth:sanctum')->group(function () {
         'payments' => PaymentController::class,
         'travel-payments' => TravelPaymentController::class,
     ]);
+
+    Route::controller(PaymentController::class)->group(function () {
+        Route::post('/payments/{payment}/approve', 'approve');
+        Route::post('/payments/{payment}/disapprove', 'disapprove');
+    });
+
+    Route::controller(TravelPaymentController::class)->group(function () {
+        Route::post('/travel-payments/{travelPayment}/approve', 'approve');
+        Route::post('/travel-payments/{travelPayment}/disapprove', 'disapprove');
+    });
+
+    Route::controller(UserController::class)->group(function () {
+        Route::post('/users/{user}/set-type', 'setType');
+    });
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });

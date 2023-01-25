@@ -27,6 +27,8 @@ class DeleteAction extends AbstractAction
      */
     public function handle(): bool
     {
+        $this->payment->approval()->delete();
+
         return (bool) $this->payment->delete();
     }
 }

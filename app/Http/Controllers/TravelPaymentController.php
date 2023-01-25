@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\PaymentApproval\ApprovalAction;
 use App\Actions\Payments\DeleteAction;
 use App\Actions\Payments\StoreTravelPaymentAction;
 use App\Actions\Payments\UpdateTravelPaymentAction;
 use App\Http\Requests\TravelPayment\TravelPaymentRequest;
 use App\Http\Resources\PaymentResource;
+use App\Models\PaymentApproval;
 use App\Models\TravelPayment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,7 +39,7 @@ class TravelPaymentController extends Controller
         $action->run();
 
         return response()->json([
-            'status' => 'Travel payment created'
+            'message' => 'Travel payment created'
         ]);
     }
 
@@ -65,7 +67,7 @@ class TravelPaymentController extends Controller
         $action->run();
 
         return response()->json([
-            'status' => 'Travel payment updated'
+            'message' => 'Travel payment updated'
         ]);
     }
 
@@ -81,7 +83,39 @@ class TravelPaymentController extends Controller
         $action->run();
 
         return response()->json([
-            'status' => 'Travel payment deleted'
+            'message' => 'Travel payment deleted'
         ], 204);
+    }
+
+    /**
+     * Approve the payment.
+     *
+     * @param  TravelPayment $travelPayment
+     * @return JsonResponse
+     */
+    public function approve(Request $request, TravelPayment $travelPayment): JsonResponse
+    {
+        $action = new ApprovalAction($request, $travelPayment, PaymentApproval::APPROVED);
+        $action->run();
+
+        return response()->json([
+            'message' => 'Payment approved'
+        ]);
+    }
+
+    /**
+     * Disapprove the payment.
+     *
+     * @param  TravelPayment $travelPayment
+     * @return JsonResponse
+     */
+    public function disapprove(Request $request, TravelPayment $travelPayment): JsonResponse
+    {
+        $action = new ApprovalAction($request, $travelPayment, PaymentApproval::DISAPPROVED);
+        $action->run();
+
+        return response()->json([
+            'message' => 'Payment disapproved'
+        ]);
     }
 }

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\PaymentApproval\ApprovalAction;
 use App\Actions\Payments\DeleteAction;
 use App\Actions\Payments\StorePaymentAction;
 use App\Actions\Payments\UpdatePaymentAction;
 use App\Http\Requests\Payment\PaymentRequest;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
+use App\Models\PaymentApproval;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -36,7 +38,7 @@ class PaymentController extends Controller
         $action->run();
 
         return response()->json([
-            'status' => 'Payment created'
+            'message' => 'Payment created'
         ]);
     }
 
@@ -64,7 +66,7 @@ class PaymentController extends Controller
         $action->run();
 
         return response()->json([
-            'status' => 'Payment updated'
+            'message' => 'Payment updated'
         ]);
     }
 
@@ -80,7 +82,39 @@ class PaymentController extends Controller
         $action->run();
 
         return response()->json([
-            'status' => 'Payment deleted'
+            'message' => 'Payment deleted'
         ], 204);
+    }
+
+    /**
+     * Approve the payment.
+     *
+     * @param  Payment  $payment
+     * @return JsonResponse
+     */
+    public function approve(Request $request, Payment $payment): JsonResponse
+    {
+        $action = new ApprovalAction($request, $payment, PaymentApproval::APPROVED);
+        $action->run();
+
+        return response()->json([
+            'message' => 'Payment approved'
+        ]);
+    }
+
+    /**
+     * Disapprove the payment.
+     *
+     * @param  Payment  $payment
+     * @return JsonResponse
+     */
+    public function disapprove(Request $request, Payment $payment): JsonResponse
+    {
+        $action = new ApprovalAction($request, $payment, PaymentApproval::DISAPPROVED);
+        $action->run();
+
+        return response()->json([
+            'message' => 'Payment disapproved'
+        ]);
     }
 }

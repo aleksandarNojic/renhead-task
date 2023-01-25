@@ -58,7 +58,6 @@ class AuthController extends Controller
         $action->run();
 
         return response()->json([
-            'status' => 200,
             'message' => 'Successfully logged out'
         ]);
     }

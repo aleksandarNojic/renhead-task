@@ -9,13 +9,22 @@ class PaymentApproval extends Model
 {
     use SoftDeletes;
 
+    const APPROVED = "APPROVED";
+    const DISAPPROVED = 'DISAPPROVED';
+
+    const STASUES = [
+        self::APPROVED,
+        self::DISAPPROVED
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id'
+        'user_id',
+        'status'
     ];
 
     /**

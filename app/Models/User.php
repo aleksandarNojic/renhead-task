@@ -12,6 +12,14 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
+    const APPROVER = 'APPROVER';
+    const ADMIN = 'ADMIN';
+
+    const TYPES = [
+        self::APPROVER,
+        self::ADMIN
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,7 +30,7 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
-        'created_at'
+        'type'
     ];
 
     /**
