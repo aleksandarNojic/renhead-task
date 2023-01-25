@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\TravelPaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +18,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResources([
+        'payments' => PaymentController::class,
+        'travel-payments' => TravelPaymentController::class,
+    ]);
+
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 

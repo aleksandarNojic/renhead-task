@@ -11,6 +11,6 @@ class LogoutAction extends AuthAction
      */
     public function handle(): bool
     {
-        return (bool) auth()->user()->tokens()->delete();;
+        return (bool) auth()->user()->tokens()->delete();
     }
 }
