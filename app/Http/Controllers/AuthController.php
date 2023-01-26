@@ -50,15 +50,10 @@ class AuthController extends Controller
      * User logout
      *
      * @param LoginRequest $request
-     * @return JsonResponse
      */
-    public function logout(Request $request): JsonResponse
+    public function logout(Request $request)
     {
         $action = new LogoutAction($request);
-        $action->run();
-
-        return response()->json([
-            'message' => 'Successfully logged out'
-        ]);
+        return $action->run();
     }
 }

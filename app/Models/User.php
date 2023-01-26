@@ -13,11 +13,9 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     const APPROVER = 'APPROVER';
-    const ADMIN = 'ADMIN';
 
     const TYPES = [
         self::APPROVER,
-        self::ADMIN
     ];
 
     /**
@@ -70,5 +68,13 @@ class User extends Authenticatable
         return $this->hasMany(
             PaymentApproval::class
         );
+    }
+
+    /**
+     * Check if has privilege
+     */
+    public function hasPrivilege(string $privilege)
+    {
+        return $this->type === $privilege;
     }
 }

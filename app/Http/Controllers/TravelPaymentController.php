@@ -10,7 +10,6 @@ use App\Http\Requests\TravelPayment\TravelPaymentRequest;
 use App\Http\Resources\PaymentResource;
 use App\Models\PaymentApproval;
 use App\Models\TravelPayment;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -21,9 +20,9 @@ class TravelPaymentController extends Controller
      *
      * @return AnonymousResourceCollection
      */
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return PaymentResource::collection(TravelPayment::with('user')->get());
+        return PaymentResource::collection(TravelPayment::with('user')->paginate($request->get('per_page', 1)));
     }
 
 
@@ -36,11 +35,7 @@ class TravelPaymentController extends Controller
     public function store(TravelPaymentRequest $request)
     {
         $action = new StoreTravelPaymentAction($request);
-        $action->run();
-
-        return response()->json([
-            'message' => 'Travel payment created'
-        ]);
+        return $action->run();
     }
 
     /**
@@ -64,58 +59,39 @@ class TravelPaymentController extends Controller
     public function update(TravelPaymentRequest $request, TravelPayment $travelPayment)
     {
         $action = new UpdateTravelPaymentAction($request, $travelPayment);
-        $action->run();
-
-        return response()->json([
-            'message' => 'Travel payment updated'
-        ]);
+        return $action->run();
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  TravelPayment  $payment
-     * @return JsonResponse
      */
-    public function destroy(Request $request, TravelPayment $travelPayment): JsonResponse
+    public function destroy(Request $request, TravelPayment $travelPayment)
     {
         $action = new DeleteAction($request, $travelPayment);
         $action->run();
-
-        return response()->json([
-            'message' => 'Travel payment deleted'
-        ], 204);
     }
 
     /**
      * Approve the payment.
      *
      * @param  TravelPayment $travelPayment
-     * @return JsonResponse
      */
-    public function approve(Request $request, TravelPayment $travelPayment): JsonResponse
+    public function approve(Request $request, TravelPayment $travelPayment)
     {
         $action = new ApprovalAction($request, $travelPayment, PaymentApproval::APPROVED);
-        $action->run();
-
-        return response()->json([
-            'message' => 'Payment approved'
-        ]);
+        return $action->run();
     }
 
     /**
      * Disapprove the payment.
      *
      * @param  TravelPayment $travelPayment
-     * @return JsonResponse
      */
-    public function disapprove(Request $request, TravelPayment $travelPayment): JsonResponse
+    public function disapprove(Request $request, TravelPayment $travelPayment)
     {
         $action = new ApprovalAction($request, $travelPayment, PaymentApproval::DISAPPROVED);
-        $action->run();
-
-        return response()->json([
-            'message' => 'Payment disapproved'
-        ]);
+        return $action->run();
     }
 }

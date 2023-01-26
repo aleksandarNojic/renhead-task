@@ -10,7 +10,6 @@ use App\Http\Requests\Payment\PaymentRequest;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use App\Models\PaymentApproval;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -21,25 +20,20 @@ class PaymentController extends Controller
      *
      * @return AnonymousResourceCollection
      */
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return PaymentResource::collection(Payment::with('user')->get());
+        return PaymentResource::collection(Payment::with('user')->paginate($request->get('per_page', 1)));
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  PaymentRequest  $request
-     * @return JsonResponse
      */
-    public function store(PaymentRequest $request): JsonResponse
+    public function store(PaymentRequest $request)
     {
         $action = new StorePaymentAction($request);
-        $action->run();
-
-        return response()->json([
-            'message' => 'Payment created'
-        ]);
+        return $action->run();
     }
 
     /**
@@ -58,63 +52,43 @@ class PaymentController extends Controller
      *
      * @param  PaymentRequest  $request
      * @param  Payment  $payment
-     * @return JsonResponse
      */
-    public function update(PaymentRequest $request, Payment $payment): JsonResponse
+    public function update(PaymentRequest $request, Payment $payment)
     {
         $action = new UpdatePaymentAction($request, $payment);
-        $action->run();
-
-        return response()->json([
-            'message' => 'Payment updated'
-        ]);
+        return $action->run();
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  Payment  $payment
-     * @return JsonResponse
      */
-    public function destroy(Request $request, Payment $payment): JsonResponse
+    public function destroy(Request $request, Payment $payment)
     {
         $action = new DeleteAction($request, $payment);
-        $action->run();
-
-        return response()->json([
-            'message' => 'Payment deleted'
-        ], 204);
+        return $action->run();
     }
 
     /**
      * Approve the payment.
      *
      * @param  Payment  $payment
-     * @return JsonResponse
      */
-    public function approve(Request $request, Payment $payment): JsonResponse
+    public function approve(Request $request, Payment $payment)
     {
         $action = new ApprovalAction($request, $payment, PaymentApproval::APPROVED);
-        $action->run();
-
-        return response()->json([
-            'message' => 'Payment approved'
-        ]);
+        return $action->run();
     }
 
     /**
      * Disapprove the payment.
      *
      * @param  Payment  $payment
-     * @return JsonResponse
      */
-    public function disapprove(Request $request, Payment $payment): JsonResponse
+    public function disapprove(Request $request, Payment $payment)
     {
         $action = new ApprovalAction($request, $payment, PaymentApproval::DISAPPROVED);
-        $action->run();
-
-        return response()->json([
-            'message' => 'Payment disapproved'
-        ]);
+        return $action->run();
     }
 }

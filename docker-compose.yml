@@ -1,0 +1,53 @@
+version: '3'
+
+######### Services ###################################
+
+services:
+  # Server container
+  nginx:
+    build:
+      context: docker/dev/nginx
+      dockerfile: Dockerfile
+    volumes:
+       - ./:/var/www
+       - ./docker/dev/nginx/logs:/var/log/nginx
+    ports:
+      - 80:80
+      - "443:443"
+    depends_on:
+      - php
+
+  # PHP FastCGI Process Manager container
+  php:
+    build:
+      context: docker/dev/php
+      dockerfile: Dockerfile
+    volumes:
+       - ./:/var/www
+    environment:
+      # If you down want to use xDebug, set remote_enable=0
+      XDEBUG_CONFIG: "remote_enable=1"
+      PHP_IDE_CONFIG: "serverName=Docker"
+    depends_on:
+      - mysql
+
+  ### MySQL Database ##########################
+  mysql:
+    image: mysql/mysql-server
+    volumes:
+      - database:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=app
+      - MYSQL_DATABASE=app
+    ports:
+      - "3307:3306"
+
+######### Volumes ###################################
+
+volumes:
+  database:
+    driver: local
+  nginx:
+    driver: local

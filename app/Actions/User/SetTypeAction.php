@@ -30,8 +30,8 @@ class SetTypeAction extends AbstractAction
      */
     public function prepare()
     {
-        if (!auth()->user()->type === User::ADMIN) {
-            throw new Exception('You do not have privilege for this action', 403);
+        if (auth()->user()->id === $this->user->id) {
+            throw new Exception('Forbiden', 403);
         }
     }
 
