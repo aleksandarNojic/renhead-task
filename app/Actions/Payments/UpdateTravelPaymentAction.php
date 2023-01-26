@@ -2,20 +2,22 @@
 
 namespace App\Actions\Payments;
 
-use App\Actions\AbstractAction;
-use App\Models\TravelPayment;
-use Illuminate\Http\Request;
+use Exception;
 
-class UpdateTravelPaymentAction extends AbstractAction
+class UpdateTravelPaymentAction extends BaseAction
 {
     /**
-     * Constructor.
+     * Prepare the service for execution.
      *
-     * @param Request|null $request
+     * @return void
+     *
+     * @throws AppException
      */
-    public function __construct(Request $request, public TravelPayment $travelPayment)
+    public function prepare()
     {
-        parent::__construct($request);
+        if ($this->payment->approval) {
+            throw new Exception('Can not update when the payment is approved/disapproved', 403);
+        }
     }
 
     /**
@@ -26,7 +28,7 @@ class UpdateTravelPaymentAction extends AbstractAction
      */
     public function handle(): bool
     {
-        return (bool) $this->travelPayment->update(
+        return (bool) $this->payment->update(
             $this->request->only('amount')
         );
     }

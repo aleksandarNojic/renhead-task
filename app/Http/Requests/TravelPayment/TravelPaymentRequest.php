@@ -14,7 +14,7 @@ class TravelPaymentRequest extends FormRequest
     public function rules()
     {
         return [
-            'amount' => 'required|numeric'
+            'amount' => 'required|numeric|max_digits:6'
         ];
     }
 }

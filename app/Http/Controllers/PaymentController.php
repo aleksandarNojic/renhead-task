@@ -29,11 +29,15 @@ class PaymentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  PaymentRequest  $request
+     *
+     * @return PaymentResource
      */
-    public function store(PaymentRequest $request)
+    public function store(PaymentRequest $request): PaymentResource
     {
         $action = new StorePaymentAction($request);
-        return $action->run();
+        $action->run();
+
+        return new PaymentResource($action->getPayment());
     }
 
     /**
@@ -56,7 +60,9 @@ class PaymentController extends Controller
     public function update(PaymentRequest $request, Payment $payment)
     {
         $action = new UpdatePaymentAction($request, $payment);
-        return $action->run();
+        $action->run();
+
+        return new PaymentResource($action->getPayment());
     }
 
     /**

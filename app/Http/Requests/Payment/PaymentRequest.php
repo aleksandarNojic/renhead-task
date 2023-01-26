@@ -14,7 +14,7 @@ class PaymentRequest extends FormRequest
     public function rules()
     {
         return [
-            'total_amount' => 'required|numeric'
+            'total_amount' => 'required|numeric|max_digits:6'
         ];
     }
 }

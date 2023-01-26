@@ -2,9 +2,7 @@
 
 namespace App\Actions\Payments;
 
-use App\Actions\AbstractAction;
-
-class StorePaymentAction extends AbstractAction
+class StorePaymentAction extends BaseAction
 {
     /**
      * Handles the main execution of the service.
@@ -14,8 +12,10 @@ class StorePaymentAction extends AbstractAction
      */
     public function handle(): bool
     {
-        return (bool) auth()->user()->payments()->create(
+        $payment = auth()->user()->payments()->create(
             $this->request->only('total_amount')
         );
+
+        return (bool) $this->setPayment($payment);
     }
 }

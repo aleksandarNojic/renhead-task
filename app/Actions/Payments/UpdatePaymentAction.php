@@ -2,23 +2,10 @@
 
 namespace App\Actions\Payments;
 
-use App\Actions\AbstractAction;
-use App\Models\Payment;
 use Exception;
-use Illuminate\Http\Request;
 
-class UpdatePaymentAction extends AbstractAction
+class UpdatePaymentAction extends BaseAction
 {
-    /**
-     * Constructor.
-     *
-     * @param Request|null $request
-     */
-    public function __construct(Request $request, public Payment $payment)
-    {
-        parent::__construct($request);
-    }
-
     /**
      * Prepare the service for execution.
      *

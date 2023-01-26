@@ -42,7 +42,7 @@ services:
       - MYSQL_PASSWORD=app
       - MYSQL_DATABASE=app
     ports:
-      - "3307:3306"
+      - "3306:3306"
 
 ######### Volumes ###################################
 

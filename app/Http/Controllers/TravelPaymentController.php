@@ -35,7 +35,9 @@ class TravelPaymentController extends Controller
     public function store(TravelPaymentRequest $request)
     {
         $action = new StoreTravelPaymentAction($request);
-        return $action->run();
+        $action->run();
+
+        return new PaymentResource($action->getPayment());
     }
 
     /**
@@ -59,7 +61,9 @@ class TravelPaymentController extends Controller
     public function update(TravelPaymentRequest $request, TravelPayment $travelPayment)
     {
         $action = new UpdateTravelPaymentAction($request, $travelPayment);
-        return $action->run();
+        $action->run();
+
+        return new PaymentResource($action->getPayment());
     }
 
     /**

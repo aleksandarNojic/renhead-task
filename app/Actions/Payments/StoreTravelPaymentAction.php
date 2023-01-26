@@ -2,9 +2,7 @@
 
 namespace App\Actions\Payments;
 
-use App\Actions\AbstractAction;
-
-class StoreTravelPaymentAction extends AbstractAction
+class StoreTravelPaymentAction extends BaseAction
 {
     /**
      * Handles the main execution of the service.
@@ -14,8 +12,10 @@ class StoreTravelPaymentAction extends AbstractAction
      */
     public function handle(): bool
     {
-        return (bool) auth()->user()->travelPayments()->create(
+        $payment = auth()->user()->travelPayments()->create(
             $this->request->only('amount')
         );
+
+        return (bool) $this->setPayment($payment);
     }
 }
